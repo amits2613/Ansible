@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+    become:yes
+    become_user:root
+
+  tasks:
+    - name: Download Java tar file
+      get_url:
+       url: http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
+       dest: /tmp/jdk-8u181-linux-x64.tar.gz
+       mode: 0755
+      register: java_tar
+
+    - name: unarchive java tar file
+      unarchive: src=/tmp/jdk-8u181-linux-x64.tar.gz dest=/usr/local/bin
+      when: "java_tar=False"
+
+    - name: Set JAVA HOME
+      shell: "export JAVA_HOME=/usr/local/bin/jdk1.8.0.181/"
+
+    - name: Set JAVA PATH
+      shell: "export PATH=$PATH:$JAVA_HOME/bin"
+
+    
+

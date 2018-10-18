@@ -1,0 +1,4 @@
+---
+vars:
+  config_lvm: false                                       
+  create: false

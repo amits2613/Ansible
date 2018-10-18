@@ -1,0 +1,32 @@
+---
+- hosts: all
+
+- name: installing lvm2
+  yum: name=system-storage-manager state=present
+  when: config_lvm
+
+- name: installing sg3_utils
+  yum: name=sg3_utils state=present
+  when: config_lvm
+         
+- name: Create a volume group name vgapp-app
+  lvg: vg:vgapp pvs=/dev/sdb state=present
+  when: create and config_lvm
+
+- name: creating new LVM logical volume
+  lvol: vg=vgapp lv=testapp size=10G
+  when: create and config_lvm
+      
+- name: creating new filesystem on new LVM logical volume
+  filesystem: fstype=ext4 dev=/dev/sdb/vgapp/testapp
+  when: create and config_lvm
+
+- name: mounting new filesystem
+  mount: name=/opt/testapp src=/dev/sdb/vgapp/testapp fstype=ext4 state=mounted
+  when: create and config_lvm   
+
+- name: Add the mount directory in fstab
+  lineinfile:
+   path: /etc/fstab
+   line: /dev/sdb/vgapp/testapp /opt/testapp ext4 defaults 0 0
+

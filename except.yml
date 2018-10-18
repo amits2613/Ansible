@@ -1,0 +1,10 @@
+---
+- name: Exeute a script
+  expect:
+    command: bash test.sh
+    responses:
+        are you sure want to run: 'yes'
+        are you sure to run as root: 'no'
+        enter the first arguments: 'first'
+        enter the password: 'password'
+       
